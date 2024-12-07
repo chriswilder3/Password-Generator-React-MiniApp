@@ -1,14 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import './App.css';
 
 function App() {
 
-  const [length, changeLength] = useState(0)
+  const [length, changeLength] = useState(8)
   const [numberAllowed, changeNumberAllowed] = useState(false)
   const [specialCharAllowed, changeSpecialCharAllowed] = useState(false)
   const [password, setPassword] = useState("")
 
-  const newHookFun = useCallback( function(){
+  const passwordGenerator = useCallback( function(){
         let pass = ""
         let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqerstuvwxyz"
         // This is the string using whose chars the password is
@@ -29,8 +29,11 @@ function App() {
         // depends on the length of the password which is 
         // the state var length.
 
-        for (let index = 0; index < number; index++) {
-            const index = floor(Math.random()*(str.length))
+        for (let index = 0; index < length; index++) {
+            const index = Math.floor(Math.random()*(str.length))
+            // Dont add +1 for array cases while generating
+            // random numbers(produces out of bound, undefined)
+
             pass += str[index]
         }
       
@@ -43,7 +46,11 @@ function App() {
       }
     , [length, numberAllowed, specialCharAllowed, setPassword]
   )
-
+  useEffect( function(){
+      passwordGenerator()
+  }, 
+  [length, numberAllowed, specialCharAllowed, passwordGenerator]
+  )
   return (
     <div className="App bg-gray-800 w-full h-screen font-mono">
         <h1 className=' text-blue-500 text-3xl font-semibold  '> Password Generator </h1>
@@ -57,20 +64,24 @@ function App() {
               </button>
             </div>
 
-            <div className="controllers flex flex-row gap-2 p-4 text-blue-300 justify-center">
+            <div className="controllers flex flex-row gap-2 p-4 text-blue-300 justify-around ">
                 <div className="slider">
-                    <input type="range" min={0} max={16}  name='slider' id='slider' />
-                    <label htmlFor="slider" className=''> Length(16) </label>
+                    <input type="range" name='slider' id='slider' 
+                              min={8} max={16} value={length} 
+                            onChange={ (e) => changeLength(e.target.value) }/>
+                    <label htmlFor="slider" className=''> Length({length}) </label>
                 </div>
 
                 <div className="numbers relative">
-                    <input type="checkbox" name="numbers" id="numbers" value={24} />
-                    <label htmlFor="numbers"> Numbers</label>
+                    <input type="checkbox" name="numbers" id="numbers" defaultChecked={numberAllowed}
+                      onChange={ () => changeNumberAllowed( (prev) => !prev )} />
+                    <label htmlFor="numbers"> Numbers({numberAllowed}) </label>
                 </div>
 
                 <div className='specialchars'>
-                  <input type="checkbox" name="specialchars" id="specialchars" value={24} />
-                  <label htmlFor="specialchars"> Special Chars</label>
+                  <input type="checkbox" name="specialchars" id="specialchars" defaultChecked={specialCharAllowed}
+                      onChange={ () => changeSpecialCharAllowed( (prev) => !prev )} />
+                  <label htmlFor="specialchars"> Special Chars({specialCharAllowed}) </label>
                 </div>
 
             </div>
