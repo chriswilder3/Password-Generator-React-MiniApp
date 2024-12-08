@@ -102,7 +102,8 @@ function App() {
               <input className='passwordField bg-slate-100 w-3/4 h-12 pl-3 rounded-md'
                     ref={passwordRef} value={password}>     
               </input>
-              <button className=' bg-sky-500 h-full text-center my-auto text-slate-100 p-3 ml-1 px-3 rounded-md '
+              <button className='h-full text-center my-auto text-slate-200 p-3 ml-1 px-3 rounded-md 
+                  bg-sky-500 hover:bg-sky-600 '
                   onClick={clipBoardCopy}>
                 Copy
               </button>
